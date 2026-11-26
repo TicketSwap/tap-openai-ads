@@ -29,7 +29,11 @@ def _insight(day: str) -> dict:
 def _sync(requests_mock, capsys, state: dict | None = None) -> tuple[list[dict], list]:
     requests_mock.get(
         f"{BASE}/campaigns",
-        json={"object": "list", "data": [{"id": "cmpn_1", "name": "x"}], "has_more": False},
+        json={
+            "object": "list",
+            "data": [{"id": "cmpn_1", "budget": {"daily_spend_limit_micros": 100000000}}],
+            "has_more": False,
+        },
     )
     insights = requests_mock.get(
         f"{BASE}/ad_account/insights",
@@ -54,6 +58,10 @@ def test_insights_request_paginates_and_authenticates(requests_mock, capsys):
     ]
     assert [r["readable_time"] for r in records] == ["2026-10-21", "2026-10-22"]
     assert records[0]["spend"] == 18.42
+    campaign = next(
+        m["record"] for m in messages if m.get("stream") == "campaigns" and "record" in m
+    )
+    assert campaign["budget"] == {"daily_spend_limit_micros": 100000000}
 
     first, second = requests
     assert first.headers["Authorization"] == "Bearer test-key"

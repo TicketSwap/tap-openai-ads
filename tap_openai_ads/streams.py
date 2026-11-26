@@ -62,7 +62,11 @@ class CampaignsStream(OpenAIAdsStream):
         th.Property("status", th.StringType),
         th.Property("bidding_type", th.StringType),
         th.Property(
-            "budget", th.ObjectType(th.Property("lifetime_spend_limit_micros", th.IntegerType))
+            "budget",
+            th.ObjectType(
+                th.Property("lifetime_spend_limit_micros", th.IntegerType),
+                th.Property("daily_spend_limit_micros", th.IntegerType),
+            ),
         ),
         th.Property("start_time", th.IntegerType),
         th.Property("end_time", th.IntegerType),
