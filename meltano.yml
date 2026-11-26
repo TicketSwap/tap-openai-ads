@@ -1,0 +1,48 @@
+send_anonymous_usage_stats: true
+project_id: "tap-openai-ads"
+default_environment: test
+requires_meltano: ">=4.0"
+environments:
+- name: test
+plugins:
+  extractors:
+  - name: "tap-openai-ads"
+    namespace: "tap_openai_ads"
+    pip_url: -e .
+    capabilities:
+    - state
+    - catalog
+    - discover
+    - about
+    - stream-maps
+    - structured-logging
+
+    settings:
+    - name: api_key
+      kind: string
+      label: API Key
+      description: Advertiser API key from Ads Manager settings, scoped to one ad account.
+      sensitive: true
+
+    - name: start_date
+      kind: date_iso8601
+      label: Start Date
+      description: First date to sync, in YYYY-MM-DD format.
+
+    - name: lookback_days
+      kind: integer
+      label: Lookback Days
+      description: Days before the bookmark to re-sync on each run.
+      value: 7
+
+    settings_group_validation:
+    - [api_key, start_date]
+
+    select:
+    - "campaigns.*"
+    - "campaign_insights.*"
+
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl

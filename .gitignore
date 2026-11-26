@@ -1,0 +1,15 @@
+config.json
+state.json
+catalog.json
+output/
+.meltano/
+.env
+.venv/
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
